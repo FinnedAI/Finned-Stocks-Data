@@ -36,23 +36,41 @@ async def on_ready():
     print(f"{bot.user} has connected to Discord!")
 
 
-@bot.command(name="info", help="Returns the info of a stock given ticker")
-async def info(ctx, ticker="AAPL"):
+@bot.command(name="info", help="Returns the info of a stock given ticker and timeframe")
+async def info(ctx, ticker="AAPL", timeframe="week"):
     await ctx.send("Compiling the data... Check your DMs...")
 
-    df = await unblock_function(ac.get_info, ticker)
+    df, sentiment = await unblock_function(ac.get_info, ticker, timeframe)
     text = df.to_markdown()
     files = [
         discord.File(
             BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_info.txt"
         ),
     ]
-    if len(str(text)) > 1950:
-        await ctx.message.author.send(
-            files=files, content=f"[FSD {datetime.now()}] Here's your data: "
-        )
-    else:
-        await ctx.message.author.send(f"""```{text.strip()}```""")
+    await ctx.message.author.send(
+        files=files,
+        content=f"[FSD {datetime.now()}] Here's your data: \n *Sentiment for {ticker} is: {sentiment}*",
+    )
+
+
+@bot.command(
+    name="calendar", help="Returns the upcoming events of a stock given ticker"
+)
+async def calendar(ctx, ticker="AAPL"):
+    await ctx.send("Compiling the data... Check your DMs...")
+
+    df = await unblock_function(ac.get_calendar, ticker)
+    text = df.to_markdown()
+    file = (
+        discord.File(
+            BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_calendar.txt"
+        ),
+    )
+
+    await ctx.message.author.send(
+        files=file,
+        content=f"[FSD {datetime.now()}] Here's your data: ",
+    )
 
 
 @bot.command(name="history", help="Returns the history of a stock given ticker")
@@ -90,6 +108,22 @@ async def history(ctx, ticker="AAPL", period="max"):
             file=files[0],
             content=f"""```{text.strip()}```""",
         )
+
+
+@bot.command(name="news", help="Returns the news of a stock given ticker")
+async def news(ctx, ticker="AAPL"):
+    await ctx.send("Compiling the data... Check your DMs...")
+
+    df = await unblock_function(ac.get_news, ticker)
+    text = df.to_markdown()
+
+    file = discord.File(BytesIO(str(text).encode()), filename=f"{ticker}_news.txt")
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            file=file, content=f"[FSD {datetime.now()}] Here's your data: "
+        )
+    else:
+        await ctx.message.author.send(f"""```{str(text).strip()}```""")
 
 
 @bot.command(name="actions", help="Returns the actions of a stock given ticker")
