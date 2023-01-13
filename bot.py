@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 import discord_actions.actions as ac
 import algorithms.montecarlo as mc
+import algorithms.singleline as sl
 import pandas as pd
 import functools
 import asyncio
@@ -36,7 +37,7 @@ async def on_ready():
 
 
 @bot.command(name="info", help="Returns the info of a stock given ticker")
-async def info(ctx, *, ticker: str = "AAPL"):
+async def info(ctx, ticker="AAPL"):
     await ctx.send("Compiling the data... Check your DMs...")
 
     df = await unblock_function(ac.get_info, ticker)
@@ -92,7 +93,7 @@ async def history(ctx, ticker="AAPL", period="max"):
 
 
 @bot.command(name="actions", help="Returns the actions of a stock given ticker")
-async def actions(ctx, *, ticker: str = "AAPL"):
+async def actions(ctx, ticker="AAPL"):
     await ctx.send("Compiling the data... Check your DMs...")
 
     df = await unblock_function(ac.get_actions, ticker)
@@ -122,7 +123,7 @@ async def actions(ctx, *, ticker: str = "AAPL"):
 
 
 @bot.command(name="dividends", help="Returns the dividends of a stock given ticker")
-async def dividends(ctx, *, ticker: str = "AAPL"):
+async def dividends(ctx, ticker="AAPL"):
     await ctx.send("Compiling the data... Check your DMs...")
 
     df = await unblock_function(ac.get_dividends, ticker)
@@ -151,7 +152,7 @@ async def dividends(ctx, *, ticker: str = "AAPL"):
 
 
 @bot.command(name="splits", help="Returns the splits of a stock given ticker")
-async def splits(ctx, *, ticker: str = "AAPL"):
+async def splits(ctx, ticker="AAPL"):
     await ctx.send("Compiling the data... Check your DMs...")
 
     df = await unblock_function(ac.get_splits, ticker)
@@ -173,24 +174,23 @@ async def splits(ctx, *, ticker: str = "AAPL"):
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(content=f"""```{text.strip()}```""", file=files[0])
+        await ctx.message.author.send(
+            content=f"""```{text.strip()}```""", file=files[0]
+        )
 
 
 @bot.command(
     name="arima",
     help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using ARIMA algorithm",
 )
-async def arima(
-    ctx, *, ticker: str = "AAPL", col: str = "High", timeframe: str = "week"
-):
+async def arima(ctx, ticker="AAPL", col="High", timeframe="week"):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
 
-    df = await unblock_function(ac.arima, ticker, timeframe)
+    fig, df = await unblock_function(sl.arima, ticker, timeframe)
     text = df.to_markdown()
 
-    df.plot(x="ds", y="AutoARIMA", title=f"{ticker} {col}")
     buffer = BytesIO()
-    plt.savefig(buffer, format="png")
+    fig.savefig(buffer, format="png")
     buffer.seek(0)
     plt.close()
 
@@ -204,7 +204,99 @@ async def arima(
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(content=f"""```{text.strip()}```""", file=files[0])
+        await ctx.message.author.send(
+            content=f"""```{text.strip()}```""", file=files[0]
+        )
+
+
+@bot.command(
+    name="ets",
+    help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using ETS algorithm",
+)
+async def ets(ctx, ticker="AAPL", col="High", timeframe="week"):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    fig, df = await unblock_function(sl.ets, ticker, timeframe)
+    text = df.to_markdown()
+
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png")
+    buffer.seek(0)
+    plt.close()
+
+    files = [
+        discord.File(buffer, filename=f"{ticker}_ETS_{col}.png"),
+        discord.File(BytesIO(str(text).encode()), filename=f"{ticker}_ETS_{col}.txt"),
+    ]
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            files=files, content=f"[FSD {datetime.now()}] Here's your data: "
+        )
+    else:
+        await ctx.message.author.send(
+            content=f"""```{text.strip()}```""", file=files[0]
+        )
+
+
+@bot.command(
+    name="ces",
+    help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using CES algorithm",
+)
+async def ces(ctx, ticker="AAPL", col="High", timeframe="week"):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    fig, df = await unblock_function(sl.ces, ticker, timeframe)
+    text = df.to_markdown()
+
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png")
+    buffer.seek(0)
+    plt.close()
+
+    files = [
+        discord.File(buffer, filename=f"{ticker}_CES_{col}.png"),
+        discord.File(BytesIO(str(text).encode()), filename=f"{ticker}_CES_{col}.txt"),
+    ]
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            files=files, content=f"[FSD {datetime.now()}] Here's your data: "
+        )
+    else:
+        await ctx.message.author.send(
+            content=f"""```{text.strip()}```""", file=files[0]
+        )
+
+
+@bot.command(
+    name="theta",
+    help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using THETA algorithm",
+)
+async def theta(ctx, ticker="AAPL", col="High", timeframe="week"):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    fig, df = await unblock_function(sl.theta, ticker, timeframe)
+    text = df.to_markdown()
+
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png")
+    buffer.seek(0)
+    plt.close()
+
+    files = [
+        discord.File(buffer, filename=f"{ticker}_THETA_{col}.png"),
+        discord.File(BytesIO(str(text).encode()), filename=f"{ticker}_THETA_{col}.txt"),
+    ]
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            files=files, content=f"[FSD {datetime.now()}] Here's your data: "
+        )
+    else:
+        await ctx.message.author.send(
+            content=f"""```{text.strip()}```""", file=files[0]
+        )
 
 
 @bot.command(
@@ -233,7 +325,9 @@ async def monte_carlo(ctx, ticker="AAPL", col="Close", timeframe="week"):
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(content=f"""```{text.strip()}```""", file=files[0])
+        await ctx.message.author.send(
+            content=f"""```{text.strip()}```""", file=files[0]
+        )
 
 
 bot.run(TOKEN)
