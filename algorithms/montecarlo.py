@@ -65,4 +65,6 @@ def monte_carlo(ticker, frame="week", col="Close"):
     return [fig, text]
 
 if __name__ == "__main__":
-    monte_carlo("AAPL", frame="week", col="Close")
+    fig, df = monte_carlo("AAPL", frame="month", col="Close")
+    # open the figure and keep open
+    plt.show(block=True)

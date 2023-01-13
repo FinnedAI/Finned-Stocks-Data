@@ -51,14 +51,20 @@ async def info(ctx, *, ticker: str = "AAPL"):
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(f"""``{text.strip()}``""")
+        await ctx.message.author.send(f"""```{text.strip()}```""")
 
 
 @bot.command(name="history", help="Returns the history of a stock given ticker")
-async def history(ctx, *, ticker: str = "AAPL"):
+async def history(ctx, ticker="AAPL", period="max"):
     await ctx.send("Compiling the data... Check your DMs...")
 
-    df = await unblock_function(ac.get_history, ticker)
+    frame_nums = {"day": 1, "week": 7, "month": 30, "year": 365}
+    if period == "max":
+        df = await unblock_function(ac.get_history, ticker)
+    else:
+        start = pd.to_datetime("today") - pd.to_timedelta(frame_nums[period], unit="d")
+        end = pd.to_datetime("today")
+        df = await unblock_function(ac.get_history, ticker, start=start, end=end)
     text = df.to_markdown()
 
     # remove the volume column
@@ -80,8 +86,8 @@ async def history(ctx, *, ticker: str = "AAPL"):
         )
     else:
         await ctx.message.author.send(
-            files=files[0],
-            content=f"""``{text.strip()}``""",
+            file=files[0],
+            content=f"""```{text.strip()}```""",
         )
 
 
@@ -111,7 +117,7 @@ async def actions(ctx, *, ticker: str = "AAPL"):
     else:
         await ctx.message.author.send(
             files=files[0],
-            content=f"""``{text.strip()}``""",
+            content=f"""```{text.strip()}```""",
         )
 
 
@@ -140,7 +146,7 @@ async def dividends(ctx, *, ticker: str = "AAPL"):
     else:
         await ctx.message.author.send(
             files=files[0],
-            content=f"""``{text.strip()}``""",
+            content=f"""```{text.strip()}```""",
         )
 
 
@@ -167,17 +173,14 @@ async def splits(ctx, *, ticker: str = "AAPL"):
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(
-            content=f"""``{text.strip()}``""",
-            file=files[0]
-        )
+        await ctx.message.author.send(content=f"""```{text.strip()}```""", file=files[0])
 
 
 @bot.command(
-    name="arima_predict",
+    name="arima",
     help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using ARIMA algorithm",
 )
-async def arima_predict(
+async def arima(
     ctx, *, ticker: str = "AAPL", col: str = "High", timeframe: str = "week"
 ):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
@@ -201,22 +204,16 @@ async def arima_predict(
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(
-            content=f"""``{text.strip()}``""",
-            file=files[0]
-        )
+        await ctx.message.author.send(content=f"""```{text.strip()}```""", file=files[0])
 
 
 @bot.command(
     name="monte_carlo",
     help="Predicts the possible movement of a stock over a given timeframe (day, week, month, year) using Monte Carlo algorithm",
 )
-async def monte_carlo(
-    ctx, *, ticker: str = "AAPL", col: str = "Close", timeframe: str = "week"
-):
+async def monte_carlo(ctx, ticker="AAPL", col="Close", timeframe="week"):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
-
-    fig, df = await unblock_function(mc.monte_carlo, ticker, timeframe)
+    fig, df = await unblock_function(mc.monte_carlo, ticker, timeframe, col)
     text = df.to_markdown()
 
     buffer = BytesIO()
@@ -236,10 +233,7 @@ async def monte_carlo(
             files=files, content=f"[FSD {datetime.now()}] Here's your data: "
         )
     else:
-        await ctx.message.author.send(
-            content=f"""``{text.strip()}``""",
-            file=files[0]
-        )
+        await ctx.message.author.send(content=f"""```{text.strip()}```""", file=files[0])
 
 
 bot.run(TOKEN)
