@@ -1,11 +1,15 @@
-import yfinance as yf
-import pandas as pd
 import sys
-from pandas_datareader import data
 
 sys.path.append("..")
+
+import yfinance as yf
+import pandas as pd
 import algorithms.sentiment as sn
-yf.pdr_override()
+
+
+def file_as_list(filename="tickers.txt"):
+    with open(filename) as f:
+        return f.read().split("\n")
 
 
 def get_news(ticker):
@@ -25,20 +29,35 @@ def get_sentiment(ticker):
     return sentiment
 
 
-def get_info(ticker, frame):
-    frame_nums = {"day": 1, "week": 7, "month": 30, "year": 365}
-    num_days = frame_nums.get(frame)
-    start = pd.Timestamp.today() - pd.Timedelta(days=num_days)
-    end = pd.Timestamp.today()
-    _ticker = data.DataReader(ticker, start=start, end=end)
+def get_info(ticker):
+    _ticker = yf.Ticker(ticker)
+    info = _ticker.info
 
-    return [_ticker, get_sentiment(ticker)]
+    return [info, get_sentiment(ticker)]
 
 
 def get_calendar(ticker):
     _ticker = yf.Ticker(ticker)
     calendar = _ticker.calendar
     return calendar
+
+
+def get_income_stmt(ticker):
+    _ticker = yf.Ticker(ticker)
+    income = _ticker.income_stmt
+    return income
+
+
+def get_cashflow(ticker):
+    _ticker = yf.Ticker(ticker)
+    cashflow = _ticker.cashflow
+    return cashflow
+
+
+def get_shares(ticker):
+    _ticker = yf.Ticker(ticker)
+    shares = _ticker.shares
+    return shares
 
 
 def get_history(ticker, **kwargs):
@@ -64,6 +83,26 @@ def get_dividends(ticker):
     _ticker = yf.Ticker(ticker)
     dividends = _ticker.dividends
     return dividends
+
+
+def get_experts(ticker, frame):
+    frame_nums = {"day": 1, "week": 7, "month": 30, "year": 365}
+    # get the number of days in the frame
+    num_days = frame_nums.get(frame)
+    start = pd.Timestamp.today() - pd.Timedelta(days=num_days)
+    end = pd.Timestamp.today()
+    _ticker = yf.Ticker(ticker)
+    experts = _ticker.recommendations
+    # filter the dataframe
+    experts = experts[(experts.index >= start) & (experts.index <= end)]
+
+    return experts
+
+
+def get_sustainability(ticker):
+    _ticker = yf.Ticker(ticker)
+    sustainability = _ticker.sustainability
+    return sustainability
 
 
 def get_splits(ticker):

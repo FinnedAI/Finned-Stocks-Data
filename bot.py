@@ -37,18 +37,21 @@ async def on_ready():
 
 
 @bot.command(name="info", help="Returns the info of a stock given ticker and timeframe")
-async def info(ctx, ticker="AAPL", timeframe="week"):
+async def info(ctx, ticker="AAPL"):
     await ctx.send("Compiling the data... Check your DMs...")
 
-    df, sentiment = await unblock_function(ac.get_info, ticker, timeframe)
-    text = df.to_markdown()
-    files = [
-        discord.File(
-            BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_info.txt"
-        ),
-    ]
+    df, sentiment = await unblock_function(ac.get_info, ticker)
+    nonmetrics = ["phone", "website", "logo_url", "city", "state", "country"]
+    for nonmetric in nonmetrics:
+        del df[nonmetric]
+
+    text = pd.DataFrame.from_dict(df, orient="index").to_markdown()
+
+    file = discord.File(
+        BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_info.txt"
+    )
     await ctx.message.author.send(
-        files=files,
+        file=file,
         content=f"[FSD {datetime.now()}] Here's your data: \n *Sentiment for {ticker} is: {sentiment}*",
     )
 
@@ -61,14 +64,48 @@ async def calendar(ctx, ticker="AAPL"):
 
     df = await unblock_function(ac.get_calendar, ticker)
     text = df.to_markdown()
-    file = (
-        discord.File(
-            BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_calendar.txt"
-        ),
+    file = discord.File(
+        BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_calendar.txt"
     )
 
     await ctx.message.author.send(
-        files=file,
+        file=file,
+        content=f"[FSD {datetime.now()}] Here's your data: ",
+    )
+
+
+@bot.command(
+    name="experts", help="Returns the expert recommendations of a stock given ticker"
+)
+async def experts(ctx, ticker="AAPL", timeframe="week"):
+    await ctx.send("Compiling the data... Check your DMs...")
+
+    df = await unblock_function(ac.get_experts, ticker, timeframe)
+    text = df.to_markdown()
+    file = discord.File(
+        BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_experts.txt"
+    )
+
+    await ctx.message.author.send(
+        file=file,
+        content=f"[FSD {datetime.now()}] Here's your data: ",
+    )
+
+
+@bot.command(
+    name="sustainability", help="Returns the sustainability of a stock given ticker"
+)
+async def sustainability(ctx, ticker="AAPL"):
+    await ctx.send("Compiling the data... Check your DMs...")
+
+    df = await unblock_function(ac.get_sustainability, ticker)
+    text = df.to_markdown()
+    file = discord.File(
+        BytesIO(str(f"""{text}""").encode()), filename=f"{ticker}_sustainability.txt"
+    )
+
+    await ctx.message.author.send(
+        file=file,
         content=f"[FSD {datetime.now()}] Here's your data: ",
     )
 
@@ -330,6 +367,138 @@ async def theta(ctx, ticker="AAPL", col="High", timeframe="week"):
     else:
         await ctx.message.author.send(
             content=f"""```{text.strip()}```""", file=files[0]
+        )
+
+
+@bot.command(
+    name="top",
+    help="Show the top stocks within the given timeframe (day, week, month, year)",
+)
+async def top(ctx, col="Close", timeframe="week", num=10):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    avgs = {}
+    for ticker in ac.file_as_list()[:num]:
+        data = await unblock_function(mc.fast_monte_carlo, ticker, timeframe, col)
+        avgs[ticker] = round((data["%change"] * data["increase"]) / 100, 2)
+
+    avgs = {
+        k: v for k, v in sorted(avgs.items(), key=lambda item: item[1], reverse=True)
+    }
+    df = pd.DataFrame.from_dict(avgs, orient="index", columns=["Relevancy Score"])
+    # set index name
+    df.index.name = "Ticker"
+    text = df.to_markdown()
+
+    # make pie chart
+    fig, ax = plt.subplots()
+    nonzero = df[df["Relevancy Score"] >= 0]
+    labels = nonzero.index
+    ax.pie(
+        nonzero["Relevancy Score"],
+        labels=labels,
+        autopct="%1.1f%%",
+        startangle=90,
+    )
+    ax.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.title(f"Top {num} stocks for {col} in {timeframe}")
+    plt.tight_layout()
+
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png")
+    buffer.seek(0)
+    plt.close()
+
+    files = [
+        discord.File(buffer, filename=f"Top_{col}.png"),
+        discord.File(BytesIO(str(text).encode()), filename=f"Top_{col}.txt"),
+    ]
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            files=files, content=f"[FSD {datetime.now()}] Here's your data: "
+        )
+    else:
+        await ctx.message.author.send(
+            file=files[0], content=f"""```{text.strip()}```"""
+        )
+
+
+@bot.command(
+    name="income",
+    help="Shows the income statement of a company",
+)
+async def income(ctx, ticker="AAPL"):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    df = await unblock_function(ac.get_income_stmt, ticker)
+    text = df.to_markdown()
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            file=discord.File(
+                BytesIO(str(text).encode()), filename=f"{ticker}_Income.txt"
+            ),
+            content=f"[FSD {datetime.now()}] Here's your data: ",
+        )
+    else:
+        await ctx.message.author.send(content=f"""```{text.strip()}```""")
+
+
+@bot.command(
+    name="cashflow",
+    help="Shows the cashflow statement of a company",
+)
+async def cashflow(ctx, ticker="AAPL"):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    df = await unblock_function(ac.get_cashflow, ticker)
+    text = df.to_markdown()
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            file=discord.File(
+                BytesIO(str(text).encode()), filename=f"{ticker}_Cashflow.txt"
+            ),
+            content=f"[FSD {datetime.now()}] Here's your data: ",
+        )
+    else:
+        await ctx.message.author.send(content=f"""```{text.strip()}```""")
+
+
+@bot.command(
+    name="shares",
+    help="Shows the number of shares outstanding of a company",
+)
+async def shares(ctx, ticker="AAPL"):
+    await ctx.send("Crunching the numbers... Check your DMs in a minute...")
+
+    df = await unblock_function(ac.get_shares, ticker)
+    df.rename(columns={"BasicShares": "Shares Outstanding"}, inplace=True)
+    text = df.to_markdown()
+
+    # make plot of shares
+    plot = df.plot()
+    plot.set_title(f"Shares Outstanding for {ticker} by Quarter")
+    fig = plot.get_figure()
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png")
+    buffer.seek(0)
+    plt.close()
+
+    files = [
+        discord.File(buffer, filename=f"{ticker}_Shares.png"),
+        discord.File(BytesIO(str(text).encode()), filename=f"{ticker}_Shares.txt"),
+    ]
+
+    if len(str(text)) > 1950:
+        await ctx.message.author.send(
+            files=files,
+            content=f"[FSD {datetime.now()}] Here's your data: ",
+        )
+    else:
+        await ctx.message.author.send(
+            file=files[0], content=f"""```{text.strip()}```"""
         )
 
 
