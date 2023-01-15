@@ -25,12 +25,13 @@ def monte_carlo(ticker, frame="week", col="Close"):
     sims = 200
     days_to_sim = frame_nums[frame]
 
+    days = days[-(frame_nums[frame] * 2) :]
+    price_orig = price_orig[-(frame_nums[frame] * 2) :]
     fig = plt.figure()
     plt.plot(days, price_orig)
     plt.title(f"Monte Carlo: {ticker}")
     plt.xlabel(f"Trading Days After {start_date}")
     plt.ylabel(f"{col} Price($)")
-    plt.xlim([frame_nums[frame] / 2, len(days) + days_to_sim])
     plt.grid()
 
     end = []
@@ -38,7 +39,7 @@ def monte_carlo(ticker, frame="week", col="Close"):
 
     for i in range(sims):
         num_days = [days[-1]]
-        price = [hist.iloc[-1, 0]]
+        price = [price_orig[-1]]
         for j in range(days_to_sim):
             num_days.append(num_days[-1] + 1)
             percent_change = norm.ppf(random(), loc=avg, scale=stdev)
@@ -50,6 +51,7 @@ def monte_carlo(ticker, frame="week", col="Close"):
             above.append(0)
         end.append(price[-1])
         plt.plot(num_days, price)
+
     avg_price = sum(end) / sims
     avg_perc_change = (avg_price - price_orig[-1]) / price_orig[-1]
     increase_chance = sum(above) / sims
@@ -81,12 +83,15 @@ def fast_monte_carlo(ticker, frame="week", col="Close"):
     sims = 200
     days_to_sim = frame_nums[frame]
 
+    days = days[-(frame_nums[frame] * 2) :]
+    price_orig = price_orig[-(frame_nums[frame] * 2) :]
+
     end = []
     above = []
 
     for i in range(sims):
         num_days = [days[-1]]
-        price = [hist.iloc[-1, 0]]
+        price = [price_orig[-1]]
         for j in range(days_to_sim):
             num_days.append(num_days[-1] + 1)
             percent_change = norm.ppf(random(), loc=avg, scale=stdev)
@@ -97,7 +102,6 @@ def fast_monte_carlo(ticker, frame="week", col="Close"):
         else:
             above.append(0)
         end.append(price[-1])
-
     avg_price = sum(end) / sims
     avg_perc_change = (avg_price - price_orig[-1]) / price_orig[-1]
     increase_chance = sum(above) / sims
@@ -106,6 +110,7 @@ def fast_monte_carlo(ticker, frame="week", col="Close"):
         "%change": round(avg_perc_change * 100, 2),
         "increase": round(increase_chance * 100, 2),
     }
+
 
 if __name__ == "__main__":
     fig, df = monte_carlo("AAPL", frame="month", col="Close")

@@ -43,12 +43,26 @@ def arima(ticker, frame="week", col="Close"):
 
     sf.fit(df)
     forecast_df = sf.predict(h=num_days, level=[90])
-    forecast_df.drop(columns=["AutoARIMA-lo-90", "AutoARIMA-hi-90"], inplace=True)
+    # add a day to the beginning of the forecast with a date of 1 + the last date in the past
+    # and a y value of the first y value in the forecast
+    forecast_df = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ds": [forecast_df["ds"].iloc[0] - pd.Timedelta(1, unit="D")],
+                    "AutoARIMA": [pasttime_y.iloc[-1]],
+                }
+            ),
+            forecast_df,
+        ],
+        ignore_index=True,
+    )
 
+    forecast_df.drop(columns=["AutoARIMA-lo-90", "AutoARIMA-hi-90"], inplace=True)
     # add the forecast to the plot
     plt.plot(forecast_df["ds"], forecast_df["AutoARIMA"])
 
-    return [fig, forecast_df]
+    return [fig, forecast_df.set_index("ds")]
 
 
 def ets(ticker, frame="week", col="Close"):
@@ -69,12 +83,24 @@ def ets(ticker, frame="week", col="Close"):
 
     sf2.fit(df)
     forecast_df = sf2.predict(h=num_days, level=[90])
+    forecast_df = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ds": [forecast_df["ds"].iloc[0] - pd.Timedelta(1, unit="D")],
+                    "AutoETS": [pasttime_y.iloc[-1]],
+                }
+            ),
+            forecast_df,
+        ],
+        ignore_index=True,
+    )
     forecast_df.drop(columns=["AutoETS-lo-90", "AutoETS-hi-90"], inplace=True)
 
     # add the forecast to the plot
     plt.plot(forecast_df["ds"], forecast_df["AutoETS"])
 
-    return [fig, forecast_df]
+    return [fig, forecast_df.set_index("ds")]
 
 
 def ces(ticker, frame="week", col="Close"):
@@ -95,11 +121,23 @@ def ces(ticker, frame="week", col="Close"):
 
     sf3.fit(df)
     forecast_df = sf3.predict(h=num_days, level=[90])
+    forecast_df = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ds": [forecast_df["ds"].iloc[0] - pd.Timedelta(1, unit="D")],
+                    "CES": [pasttime_y.iloc[-1]],
+                }
+            ),
+            forecast_df,
+        ],
+        ignore_index=True,
+    )
 
     # add the forecast to the plot
     plt.plot(forecast_df["ds"], forecast_df["CES"])
 
-    return [fig, forecast_df]
+    return [fig, forecast_df.set_index("ds")]
 
 
 def theta(ticker, frame="week", col="Close"):
@@ -120,9 +158,21 @@ def theta(ticker, frame="week", col="Close"):
 
     sf4.fit(df)
     forecast_df = sf4.predict(h=num_days, level=[90])
+    forecast_df = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ds": [forecast_df["ds"].iloc[0] - pd.Timedelta(1, unit="D")],
+                    "AutoTheta": [pasttime_y.iloc[-1]],
+                }
+            ),
+            forecast_df,
+        ],
+        ignore_index=True,
+    )
     forecast_df.drop(columns=["AutoTheta-lo-90", "AutoTheta-hi-90"], inplace=True)
 
     # add the forecast to the plot
     plt.plot(forecast_df["ds"], forecast_df["AutoTheta"])
 
-    return [fig, forecast_df]
+    return [fig, forecast_df.set_index("ds")]
