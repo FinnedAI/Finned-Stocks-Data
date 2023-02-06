@@ -30,6 +30,7 @@ def arima(ticker, frame="week", col="Close"):
     # get the number of days in the frame
     num_days = frame_nums.get(frame)
     df = ac.history_to_sf(ticker, col)
+    df = df[~(df == 0).any(axis=1)]
     pasttime_x = df["ds"].tail(num_days * 2)
     pasttime_y = df["y"].tail(num_days * 2)
 
@@ -70,6 +71,7 @@ def ets(ticker, frame="week", col="Close"):
     # get the number of days in the frame
     num_days = frame_nums.get(frame)
     df = ac.history_to_sf(ticker, col)
+    df = df[~(df == 0).any(axis=1)]
     pasttime_x = df["ds"].tail(num_days * 2)
     pasttime_y = df["y"].tail(num_days * 2)
 
@@ -108,6 +110,7 @@ def ces(ticker, frame="week", col="Close"):
     # get the number of days in the frame
     num_days = frame_nums.get(frame)
     df = ac.history_to_sf(ticker, col)
+    df = df[~(df == 0).any(axis=1)]
     pasttime_x = df["ds"].tail(num_days * 2)
     pasttime_y = df["y"].tail(num_days * 2)
 
@@ -145,6 +148,7 @@ def theta(ticker, frame="week", col="Close"):
     # get the number of days in the frame
     num_days = frame_nums.get(frame)
     df = ac.history_to_sf(ticker, col)
+    df = df[~(df == 0).any(axis=1)]
     pasttime_x = df["ds"].tail(num_days * 2)
     pasttime_y = df["y"].tail(num_days * 2)
 

@@ -83,8 +83,8 @@ def fast_monte_carlo(ticker, frame="week", col="Close"):
     sims = 200
     days_to_sim = frame_nums[frame]
 
-    days = days[-(frame_nums[frame] * 2) :]
-    price_orig = price_orig[-(frame_nums[frame] * 2) :]
+    days = days[-(frame_nums[frame] * 2):]
+    price_orig = price_orig[-(frame_nums[frame] * 2):]
 
     end = []
     above = []

@@ -254,7 +254,7 @@ async def splits(ctx, ticker="AAPL"):
     name="arima",
     help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using ARIMA algorithm",
 )
-async def arima(ctx, ticker="AAPL", col="High", timeframe="week"):
+async def arima(ctx, ticker="AAPL", col="Close", timeframe="week"):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
 
     fig, df = await unblock_function(sl.arima, ticker, timeframe)
@@ -284,7 +284,7 @@ async def arima(ctx, ticker="AAPL", col="High", timeframe="week"):
     name="ets",
     help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using ETS algorithm",
 )
-async def ets(ctx, ticker="AAPL", col="High", timeframe="week"):
+async def ets(ctx, ticker="AAPL", col="Close", timeframe="week"):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
 
     fig, df = await unblock_function(sl.ets, ticker, timeframe)
@@ -314,7 +314,7 @@ async def ets(ctx, ticker="AAPL", col="High", timeframe="week"):
     name="ces",
     help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using CES algorithm",
 )
-async def ces(ctx, ticker="AAPL", col="High", timeframe="week"):
+async def ces(ctx, ticker="AAPL", col="Close", timeframe="week"):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
 
     fig, df = await unblock_function(sl.ces, ticker, timeframe)
@@ -344,7 +344,7 @@ async def ces(ctx, ticker="AAPL", col="High", timeframe="week"):
     name="theta",
     help="Predicts the movement of a stock over a given timeframe (day, week, month, year) using THETA algorithm",
 )
-async def theta(ctx, ticker="AAPL", col="High", timeframe="week"):
+async def theta(ctx, ticker="AAPL", col="Close", timeframe="week"):
     await ctx.send("Crunching the numbers... Check your DMs in a minute...")
 
     fig, df = await unblock_function(sl.theta, ticker, timeframe)
