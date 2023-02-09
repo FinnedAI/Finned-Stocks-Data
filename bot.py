@@ -7,6 +7,7 @@ from datetime import datetime
 import discord_actions.actions as ac
 import algorithms.montecarlo as mc
 import algorithms.singleline as sl
+from algorithms.movers import *
 import pandas as pd
 import functools
 import asyncio

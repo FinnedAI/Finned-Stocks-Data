@@ -42,7 +42,9 @@ def arima(ticker, frame="week", col="Close"):
     plt.ylabel(f"{col} Price($)")
     plt.grid()
 
-    sf.fit(df)
+    # arima requires a lot of historical data to make a good forecast
+    backdata = 14 if num_days <= 14 else num_days*2
+    sf.fit(df.tail(backdata))
     forecast_df = sf.predict(h=num_days, level=[90])
     # add a day to the beginning of the forecast with a date of 1 + the last date in the past
     # and a y value of the first y value in the forecast
@@ -83,7 +85,9 @@ def ets(ticker, frame="week", col="Close"):
     plt.ylabel(f"{col} Price($)")
     plt.grid()
 
-    sf2.fit(df)
+    # ets requires a lot of historical data to make a good forecast
+    backdata = 14 if num_days <= 14 else num_days*2
+    sf2.fit(df.tail(backdata))
     forecast_df = sf2.predict(h=num_days, level=[90])
     forecast_df = pd.concat(
         [
@@ -122,7 +126,9 @@ def ces(ticker, frame="week", col="Close"):
     plt.ylabel(f"{col} Price($)")
     plt.grid()
 
-    sf3.fit(df)
+    # ces requires a lot of historical data to make a good forecast
+    backdata = 14 if num_days <= 14 else num_days*2
+    sf3.fit(df.tail(backdata))
     forecast_df = sf3.predict(h=num_days, level=[90])
     forecast_df = pd.concat(
         [
@@ -160,7 +166,9 @@ def theta(ticker, frame="week", col="Close"):
     plt.ylabel(f"{col} Price($)")
     plt.grid()
 
-    sf4.fit(df)
+    # arima requires a lot of historical data to make a good forecast
+    backdata = 14 if num_days <= 14 else num_days*2
+    sf4.fit(df.tail(backdata))
     forecast_df = sf4.predict(h=num_days, level=[90])
     forecast_df = pd.concat(
         [
