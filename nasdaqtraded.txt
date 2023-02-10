@@ -3191,6 +3191,7 @@ Y|EFAX|SPDR MSCI EAFE Fossil Fuel Reserves Free ETF|P| |Y|100|N||EFAX|EFAX|N
 Y|EFC|Ellington Financial Inc. Common Stock |N| |N|100|N||EFC|EFC|N
 Y|EFC$A|Ellington Financial Inc. 6.750% Series A Fixed-to-Floating Rate Cumulative Redeemable Preferred Stock|N| |N|100|N||EFCpA|EFC-A|N
 Y|EFC$B|Ellington Financial Inc. 6.250% Series B Fixed-Rate Reset Cumulative Redeemable Preferred Stock|N| |N|100|N||EFCpB|EFC-B|N
+Y|EFC$C|Ellington Financial Inc. 8.625% Series C Fixed-Rate Reset Cumulative Redeemable Preferred Stock|N| |N|100|N||EFCpC|EFC-C|N
 Y|EFG|iShares MSCI EAFE Growth ETF|Z| |Y|100|N||EFG|EFG|N
 Y|EFHT|EF Hutton Acquisition Corporation I - Common Stock|Q|G|N|100|N|N||EFHT|N
 Y|EFHTR|EF Hutton Acquisition Corporation I - Rights|Q|G|N|100|N|N||EFHTR|N
@@ -4736,8 +4737,6 @@ Y|GSPY|Gotham Enhanced 500 ETF|P| |Y|100|N||GSPY|GSPY|N
 Y|GSQB|G Squared Ascend II Inc. Class A Ordinary Shares|N| |N|100|N||GSQB|GSQB|N
 Y|GSQB.U|G Squared Ascend II Inc. Units|N| |N|100|N||GSQB.U|GSQB=|N
 Y|GSQB.W|G Squared Ascend II Inc. Warrants, each whole warrant exercisable for one Class A ordinary share at an exercise price of $11.50|N| |N|100|N||GSQB.WS|GSQB+|N
-Y|GSQD|G Squared Ascend I Inc. Class A Ordinary Shares|N| |N|100|N||GSQD|GSQD|N
-Y|GSQD.U|G Squared Ascend I Inc. Units, each consisting of one Class A ordinary share and one-fifth of one Warrant to acquire one Class A ordinary share|N| |N|100|N||GSQD.U|GSQD=|N
 Y|GSRM|GSR II Meteora Acquisition Corp. - Class A Common Stock|Q|G|N|100|N|N||GSRM|N
 Y|GSRMR|GSR II Meteora Acquisition Corp. - Right|Q|G|N|100|N|N||GSRMR|N
 Y|GSRMU|GSR II Meteora Acquisition Corp. - Unit|Q|G|N|100|N|N||GSRMU|N
@@ -5068,6 +5067,7 @@ Y|HRT|HireRight Holdings Corporation Common Stock|N| |N|100|N||HRT|HRT|N
 Y|HRTG|Heritage Insurance Holdings, Inc. Common Stock|N| |N|100|N||HRTG|HRTG|N
 Y|HRTX|Heron Therapeutics, Inc.   - Common Stock|Q|S|N|100|N|N||HRTX|N
 Y|HRZN|Horizon Technology Finance Corporation - Common Stock|Q|Q|N|100|N|N||HRZN|N
+Y|HSAI|Hesai Group - American Depositary Share, each ADS represents one Class B ordinary share|Q|Q|N|100|N|N||HSAI|N
 Y|HSBC|HSBC Holdings, plc. Common Stock|N| |N|100|N||HSBC|HSBC|N
 Y|HSC|Harsco Corporation Common Stock|N| |N|100|N||HSC|HSC|N
 Y|HSCS|Heart Test Laboratories, Inc. - Common Stock|Q|S|N|100|N|D||HSCS|N
@@ -6487,6 +6487,7 @@ Y|LSAK|Lesaka Technologies, Inc. - Common Stock|Q|Q|N|100|N|N||LSAK|N
 Y|LSAT|LeaderShares AlphaFactor Tactical Focused ETF|P| |Y|100|N||LSAT|LSAT|N
 Y|LSBK|Lake Shore Bancorp, Inc. - Common Stock|Q|G|N|100|N|N||LSBK|N
 Y|LSCC|Lattice Semiconductor Corporation - Common Stock|Q|Q|N|100|N|N||LSCC|N
+Y|LSDI|Lucy Scientific Discovery Inc. - Common Stock|Q|S|N|100|N|N||LSDI|N
 Y|LSEA|Landsea Homes Corporation - Common Stock|Q|S|N|100|N|N||LSEA|N
 Y|LSEAW|Landsea Homes Corporation - Warrant|Q|S|N|100|N|N||LSEAW|N
 Y|LSF|Laird Superfood, Inc. Common Stock|A| |N|100|N||LSF|LSF|N
@@ -7072,7 +7073,6 @@ Y|MTB$H|M&T Bank Corporation Perpetual Fixed-to-Floating Rate Non-Cumulative Pre
 Y|MTC|MMTec, Inc. - Common Shares|Q|S|N|100|N|N||MTC|N
 Y|MTCH|Match Group, Inc. - Common Stock|Q|Q|N|100|N|N||MTCH|N
 Y|MTCN|ArcelorMittal 5.50% Mandatorily Convertible Subordinated Notes due 2023|N| |N|100|N||MTCN|MTCN|N
-Y|MTCR|Metacrine, Inc. - Common Stock|Q|S|N|100|N|N||MTCR|N
 Y|MTD|Mettler-Toledo International, Inc. Common Stock|N| |N|100|N||MTD|MTD|N
 Y|MTDR|Matador Resources Company Common Stock|N| |N|100|N||MTDR|MTDR|N
 Y|MTEK|Maris-Tech Ltd. - ordinary shares|Q|S|N|100|N|D||MTEK|N
@@ -7606,6 +7606,7 @@ Y|NXPL|NextPlat Corp - Common Stock|Q|S|N|100|N|D||NXPL|N
 Y|NXPLW|NextPlat Corp - Warrants|Q|S|N|100|N|D||NXPLW|N
 Y|NXRT|NexPoint Residential Trust, Inc. Common Stock|N| |N|100|N||NXRT|NXRT|N
 Y|NXST|Nexstar Media Group, Inc. - Common Stock|Q|Q|N|100|N|N||NXST|N
+Y|NXT|Nextracker Inc. - Class A Common Stock|Q|Q|N|100|N|N||NXT|N
 Y|NXTC|NextCure, Inc. - Common Stock|Q|Q|N|100|N|N||NXTC|N
 Y|NXTE|Investment Managers Series Trust II AXS Green Alpha ETF|P| |Y|100|N||NXTE|NXTE|N
 Y|NXTG|First Trust Indxx NextG ETF|Q|G|Y|100|N|N||NXTG|N
@@ -8706,7 +8707,6 @@ Y|QUAL|iShares MSCI USA Quality Factor ETF|Z| |Y|100|N||QUAL|QUAL|N
 Y|QUBT|Quantum Computing Inc. - Common Stock|Q|S|N|100|N|N||QUBT|N
 Y|QUIK|QuickLogic Corporation - Common Stock|Q|S|N|100|N|N||QUIK|N
 Y|QULL|ETRACS 2x Leveraged MSCI US Quality Factor TR ETN|P| |Y|100|N||QULL|QULL|N
-Y|QUMU|Qumu Corporation - Common Stock|Q|S|N|100|N|N||QUMU|N
 Y|QUOT|Quotient Technology Inc. Common Stock|N| |N|100|N||QUOT|QUOT|N
 Y|QURE|uniQure N.V. - Ordinary Shares|Q|Q|N|100|N|N||QURE|N
 Y|QUS|SPDR MSCI USA StrategicFactors ETF|P| |Y|100|N||QUS|QUS|N
@@ -9736,7 +9736,7 @@ Y|SOI|Solaris Oilfield Infrastructure, Inc. Class A Common Stock|N| |N|100|N||SO
 Y|SOJC|Southern Company (The) Series 2017B 5.25% Junior Subordinated Notes due December 1, 2077|N| |N|100|N||SOJC|SOJC|N
 Y|SOJD|Southern Company (The) Series 2020A 4.95% Junior Subordinated Notes due January 30, 2080|N| |N|100|N||SOJD|SOJD|N
 Y|SOJE|Southern Company (The) Series 2020C 4.20% Junior Subordinated Notes due October 15, 2060|N| |N|100|N||SOJE|SOJE|N
-Y|SOL|Renesola Ltd. American Depsitary Shares (Each representing 10 shares)|N| |N|100|N||SOL|SOL|N
+Y|SOL|Emeren Group Ltd American Depositary Shares, each representing 10 shares|N| |N|100|N||SOL|SOL|N
 Y|SOLO|Electrameccanica Vehicles Corp. Ltd. - Common Stock|Q|S|N|100|N|N||SOLO|N
 Y|SOLOW|Electrameccanica Vehicles Corp. Ltd. - Warrants|Q|S|N|100|N|N||SOLOW|N
 Y|SOLR|SmartETFs Sustainable Energy II ETF|P| |Y|100|N||SOLR|SOLR|N
@@ -11728,4 +11728,4 @@ Y|ZXZZT|NASDAQ TEST STOCK|Q|G| |100|Y|N||ZXZZT|N
 Y|ZYME|Zymeworks Inc. - Common Stock|Q|Q|N|100|N|N||ZYME|N
 Y|ZYNE|Zynerba Pharmaceuticals, Inc. - Common Stock|Q|G|N|100|N|D||ZYNE|N
 Y|ZYXI|Zynex, Inc. - Common Stock|Q|Q|N|100|N|N||ZYXI|N
-File Creation Time: 0208202321:32|||||
+File Creation Time: 0209202311:02|||||

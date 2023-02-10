@@ -1,19 +1,28 @@
 from ftplib import FTP
 import pandas as pd
-import requests
+import urllib3
 import discord
+import sys
+import json
+http = urllib3.PoolManager()
+
+# config is at the root of the project
+# since this file is normally imported from the root of the project
+# we need to add the parent directory to the path when running this file directly
+if __name__ == "__main__":
+    sys.path.append("..")
 import config as CONFIG
-import time
+
+import sys
 import asyncio
 
 """
 Track live momement of tickers and send alerts when they move
 past a certain threshold.
 """
-past_movements = {}
 tickers = False
 
-def retrieve_tickers():
+async def retrieve_tickers():
     # prevent calling of ftp server after the first time running the function
     global tickers
     if tickers: return tickers
@@ -34,40 +43,35 @@ def retrieve_tickers():
     tickers = [str(ticker) for ticker in tickers if all(char not in str(ticker) for char in blacklist)]
     return tickers
 
-# init_phase is a boolean that is true if this is the first time the function is being called
-# so that we can initialize the past_movements dict
-def get_tickers_json(init_phase):
-    tickers = retrieve_tickers()
+async def get_tickers_json(bot):
+    tickers = await retrieve_tickers()
     # batch the tickers into groups of 1000
     ticker_batches = [tickers[i : i + 1900] for i in range(0, len(tickers), 1900)]
     # send the batches to the API
     for batch in ticker_batches:
         url = f"https://query1.finance.yahoo.com/v7/finance/quote?formatted=true&symbols={'%2c'.join(batch)}&corsDomain=finance.yahoo.com"
         
-        response = requests.get(url)
-        data = response.json()
-        if init_phase:
-            for ticker in data["quoteResponse"]["result"]:
-                past_movements[ticker["symbol"]] = ticker["regularMarketChangePercent"]["raw"]
-        else:
-            for ticker in data["quoteResponse"]["result"]: notify_if_appropriate(ticker["symbol"], ticker["regularMarketChangePercent"]["raw"])
+        response = http.request('GET', url)
+        data = json.loads(response.data)
+        for ticker in data["quoteResponse"]["result"]: await notify_if_appropriate(ticker["symbol"], ticker["regularMarketChangePercent"]["raw"], bot)
 
-async def notify_if_appropriate(ticker, percent_change):
-    CHANNEL_ID = CONFIG["CHANNEL_ID"]
-    THRESHOLD = CONFIG["THRESHOLD"]
-    if abs(percent_change - past_movements[ticker]) > THRESHOLD:
+async def notify_if_appropriate(ticker, percent_change, bot):
+    CHANNEL_ID = CONFIG.CHANNEL_ID
+    THRESHOLD = CONFIG.THRESHOLD
+    if percent_change > THRESHOLD:
         # send alert to discord in the channel with the id CHANNEL_ID
         channel = bot.get_channel(CHANNEL_ID)
-        message = f"{ticker} is on the move! It has moved {percent_change - past_movements[ticker]}% in the last minute. Buy it while it's hot!"
+        message = f"{ticker} is on the move! It has moved {percent_change}% today. Buy it while it's hot!"
         await channel.send(message)
 
 
 # start the movers thread
-def start_movers():
-    get_tickers_json(True)
+async def start_movers(bot):
+    print("Starting movers subprocess...")
     while True:
-        get_tickers_json(False)
-        time.sleep(60)
+        await get_tickers_json(bot)
+        # sleep without blocking the main thread for 10 minutes
+        await asyncio.sleep(600)
 
 if __name__ == "__main__":
     t = retrieve_tickers()

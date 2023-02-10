@@ -34,6 +34,8 @@ async def unblock_function(fn, *args, **kwargs):
 
 @bot.event
 async def on_ready():
+    # make start_movers() task and pass argument of bot
+    bot.loop.create_task(start_movers(bot))
     print(f"{bot.user} has connected to Discord!")
 
 
